@@ -1,0 +1,5 @@
+tmp
+build/iphone/*
+.fastdev.lock
+build.log
+
