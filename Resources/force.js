@@ -17,6 +17,10 @@ function info(str) {
 	Ti.API.info('[Force.com] '+str);
 }
 
+function error(str) {
+	Ti.API.error('[Force.com] '+str);
+}
+
 //Authorize a Salesforce.com User Account
 exports.authorize = function(callbacks) {
 	
@@ -147,13 +151,17 @@ exports.logout = function() {
 	xhr.onload = function() {
 		// If successful
 		try {
-            var data = (opts.format === 'json') ? this.responseText : this.responseData;
-            if(data) {
-                data = (opts.format === 'json') ? JSON.parse(data) : data;
-				if(opts.callback) {
-					(opts.params) ? opts.callback(data, opts.params) : opts.callback(data);
-				} else {
-					return data;
+			info(JSON.stringify(xhr));
+			if (Number(xhr.status) >= 200 && Number(xhr.status) < 300) {
+				opts.callback && opts.callback(JSON.parse(this.responseText));
+			}
+			else {
+				if (opts.onerror) {
+					opts.onerror();
+				}
+				else {
+					error('Error during Force.com request');
+					//TODO: srsly.  Need moar error handling.
 				}
 			}
 		}
@@ -165,10 +173,7 @@ exports.logout = function() {
 
 	if (opts.ondatastream) {
 		xhr.ondatastream = function(e){
-			if (opts.ondatastream){
-				opts.ondatastream(e.progress);
-			}else{
-			}
+			opts.ondatastream && opts.ondatastream();
 		};
     }
 
@@ -177,15 +182,20 @@ exports.logout = function() {
 	 * @param {Object} e The callback object
 	 */
 	xhr.onerror = function(e) {
-		if(opts.onerror) {
-			opts.onerror(this);
-		} else {
-            Ti.API.error( JSON.stringify(this) );
+		if (xhr.status === 401) {
+			alert('Session expired - please log in.');
+			exports.logout();
+			exports.authorize();
+		}
+		else {
+			opts.onerror && opts.onerror();
+			Ti.API.info(xhr.responseText);
 		}
 	};
 
 	// Open the remote connection
 	var fullURL = INSTANCE_URL+'/services/data/'+API_VERSION+opts.url;
+	info(fullURL);
 	if(opts.type) {
 		xhr.open(opts.type, fullURL);	
 	} 

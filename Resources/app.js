@@ -2,14 +2,10 @@ var force = require('force');
 
 force.authorize({
 	success: function() {
-		force.request({
-			type:'GET',
-			url:'/sobjects',
-			format:'json',
-			callback: function(data) {
-				alert(JSON.stringify(data));
-			}
-		});
+		//If we're logged in, create a very simple accounts UI
+		var ui = require('ui');
+		var w = ui.createAppWindow();
+		w.open();
 	},
 	error: function() {
 		alert('error');
