@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
 	<!-- Salesforce Configuration -->
-	<property name="force.consumer.key" type="string">3MVG9y6x0357HlecoYa6Ov_rxbC7V3QBJmpMOTHDz3EE.nAt.Kz0CM2FJPWwjrCirMUV3kjRADdyc_jkxhqYp</property>
-	<property name="force.consumer.secret" type="string">3085664174312398895</property>
+	<property name="force.consumer.key" type="string">YOUR KEY HERE</property>
+	<property name="force.consumer.secret" type="string">YOUR SECRET HERE</property>
 	
     <deployment-targets>
         <target device="mobileweb">true</target>
